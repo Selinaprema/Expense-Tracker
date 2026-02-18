@@ -18,3 +18,32 @@ def fetch_expenses():
 
     conn.close()
     return expenses
+
+def add_expense(date, category, description, amount):
+    """
+    Inserts a new expense into the database.
+
+    Parameters:
+        date (str): The date of the expense
+        category (str): Expense category
+        description (str): Description of the expense
+        amount (float): Amount spent
+
+    Returns:
+        The ID of the newly inserted expense.
+    """
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute('''
+        INSERT INTO expenses (date, category, description, amount)
+        VALUES (?, ?, ?, ?)
+    ''', (date, category, description, amount))
+
+    conn.commit()
+    expense_id = cursor.lastrowid
+    conn.close()
+
+    return expense_id
+
