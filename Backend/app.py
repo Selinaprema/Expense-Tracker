@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS # allows Cross-Origin Resource Sharing for all routes 
-from database import init_db
-from services import fetch_expenses,add_expense
+from .database import init_db
+from .services import fetch_expenses, add_expense
+
 
 
 app = Flask(__name__) #creates a Flask application instance
@@ -32,7 +33,7 @@ def create_expense():
         if field not in data:
             return jsonify({"error": f"{field} is required"}), 400
 
-    try:
+    try: #adds the new expense to the database
         expense_id = add_expense(
             data["date"],
             data["category"],
@@ -50,6 +51,5 @@ def create_expense():
 
 
 if __name__ == "__main__":
-    print(app.url_map)
-
     app.run(debug=True)
+
