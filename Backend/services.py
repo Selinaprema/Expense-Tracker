@@ -1,7 +1,6 @@
 from .database import get_db_connection
 
 
-
 def fetch_expenses():
     """Fetches all expenses from the database.
     
@@ -47,4 +46,29 @@ def add_expense(date, category, description, amount):
     conn.close()
 
     return expense_id
+
+def delete_expense(expense_id):
+    """deletes an expense from the database based on the  expense ID.
+
+    Parameters:
+        expense_id (int): The ID of the expense to be deleted   
+
+        Returns:  True if an expense was deleted, False otherwise.
+    """
+
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+          "DELETE FROM expenses WHERE id = ?",
+        (expense_id,)
+     )
+
+    conn.commit()
+
+    # rowcount tells us how many rows were affected
+    deleted = cursor.rowcount > 0
+
+    conn.close()
+    return deleted
 

@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS # allows Cross-Origin Resource Sharing for all routes 
 from .database import init_db
-from .services import fetch_expenses, add_expense
+from .services import fetch_expenses, add_expense, delete_expense
 
 
 
@@ -50,6 +50,16 @@ def create_expense():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route('/api/expenses/<int:expense_id>', methods=['DELETE'])
+def remove_expense(expense_id):
+
+    deleted = delete_expense(expense_id)
+
+    if not deleted:
+        return jsonify({"error": "Expense not found"}), 404
+
+    return jsonify({"message": "Expense successfully deleted"}), 200
+
+
 if __name__ == "__main__":
     app.run(debug=True)
-
