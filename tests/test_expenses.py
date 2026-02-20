@@ -2,6 +2,8 @@ import sys
 import os
 import pytest
 
+# Add the project root directory to Python's module search path
+# This lets pytest import the Backend package when running tests from the root folder
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from Backend.app import app
@@ -48,3 +50,23 @@ def test_create_expense_missing_field(client):
     response = client.post("/api/expenses", json=data)
 
     assert response.status_code == 400
+
+
+def test_delete_expense_success(client):
+
+    response = client.post("/api/expenses",json={
+        "date": "2026-02-18",
+        "category": "Food",
+        "description": "Lunch",
+        "amount": 12.50
+    })
+
+    assert response.status_code == 201
+    expense_id = response.get_json ()["id"]
+
+    delete_response = client.delete(f'/api/expenses/{expense_id}')
+
+
+    assert delete_response.status_code == 200
+    json_delete_response = delete_response.get_json()
+    assert json_delete_response ["message"] =="Expense successfully deleted"
