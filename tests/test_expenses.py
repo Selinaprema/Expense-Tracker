@@ -70,3 +70,29 @@ def test_delete_expense_success(client):
     assert delete_response.status_code == 200
     json_delete_response = delete_response.get_json()
     assert json_delete_response ["message"] =="Expense successfully deleted"
+
+def test_update_expense_success(client):
+
+#create an expense to update
+    response = client.post("/api/expenses",json={
+        "date": "2026-02-18",
+        "category": "Food",
+        "description": "Lunch",
+        "amount": 12.50
+    })
+
+    assert response.status_code == 201
+    expense_id = response.get_json ()["id"]
+
+#update the expense
+    update_response = client.put(f'/api/expenses/{expense_id}', json={
+        "date": "2026-02-19",
+        "category": "Food",
+        "description": "Dinner",
+        "amount": 15.00
+    })
+
+    assert update_response.status_code == 200
+    json_update_response = update_response.get_json()
+    assert json_update_response ["message"] =="Expense successfully updated"
+   

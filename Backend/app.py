@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS # allows Cross-Origin Resource Sharing for all routes 
 from .database import init_db
-from .services import fetch_expenses, add_expense, delete_expense
+from .services import fetch_expenses, add_expense, delete_expense, update_expense
 
 
 
@@ -63,3 +63,31 @@ def remove_expense(expense_id):
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+
+@app.route('/api/expenses/<int:expense_id>', methods=['PUT'])
+def ammend_expense(expense_id):
+
+    data = request.get_json()
+
+    if not data:
+        return jsonify ({"error": "Input not provided"}), 400
+    
+    required_fields = ["date", "category", "description", "amount"]
+
+    for field in required_fields:
+        if field not in data:
+            return jsonify({"error": f"{field} is required"}), 400
+        
+    updated = update_expense (
+        expense_id,
+        data ["date"], 
+        data ["category"],
+        data ["description"],
+        float (data ["amount"])
+    )
+
+    if not updated:
+        return jsonify({"error": "Expense not found"}), 404
+    
+    return jsonify({"message": "Expense successfully updated"}), 200
