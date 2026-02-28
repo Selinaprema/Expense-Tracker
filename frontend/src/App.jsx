@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import AddExpense from "./components/AddExpense";
+import ExpenseList from "./components/ExpenseList";
 
 function App() {
   const [expenses, setExpenses] = useState([]);
@@ -35,24 +36,10 @@ function App() {
 
       <h2>All Expenses</h2>
 
-      {expenses.length === 0 ? (
-        <p>No expenses yet</p>
-      ) : (
-        <ul>
-          {expenses.map(expense => (
-            <li key={expense.id}>
-              {expense.date} | {expense.category} | {expense.description} | £{expense.amount}
-              <button
-              onClick={()=> handleDelete(expense.id)}
-              style = {{
-                backgroundColor: "#dc3545"
-              }}>
-                Delete
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
+    <ExpenseList 
+      expenses={expenses}
+      onDelete={handleDelete}
+/>
     </div>
   );
 }
