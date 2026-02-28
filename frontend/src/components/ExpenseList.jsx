@@ -1,3 +1,5 @@
+import ExpenseItem from "./ExpenseItem"
+
 function ExpenseList({ expenses, onDelete}){
     if (expenses.length === 0){
         return <p> No Expenses Yet</p>
@@ -6,14 +8,11 @@ function ExpenseList({ expenses, onDelete}){
     return(
         <ul>
             {expenses.map(expense=>(
-                <li key={expense.id}>
-                    {expense.date} | {expense.category} | {expense.description} | £{expense.amount}
-                    <button onClick={() => onDelete(expense.id)}
-                        style={{backgroundColor:"#dc3545" }}
-                    >
-                    Delete
-                    </button>
-                </li>
+                <ExpenseItem
+                    key={expense.id}
+                    expense={expense}
+                    onDelete={(onDelete)}
+                />
             ))}
         </ul>
     );

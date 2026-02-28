@@ -36,9 +36,9 @@ function App() {
 
       <h2>All Expenses</h2>
 
-    <ExpenseList 
-      expenses={expenses}
-      onDelete={handleDelete}
+      <ExpenseList 
+        expenses={expenses}
+        onDelete={handleDelete}
 />
     </div>
   );
