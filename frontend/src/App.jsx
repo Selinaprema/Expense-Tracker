@@ -17,6 +17,14 @@ function App() {
     fetchExpenses();
   }, []);
 
+  //delete an expense
+  const handleDelete = (id) => {
+    fetch(`http://127.0.0.1:5000/api/expenses/${id}`, {
+      method: 'DELETE'
+    })
+    .then(() => fetchExpenses())
+    .catch(error => console.error('Error deleting expense:', error));
+  }
 
   // Render the interface
   return (
@@ -34,6 +42,13 @@ function App() {
           {expenses.map(expense => (
             <li key={expense.id}>
               {expense.date} | {expense.category} | {expense.description} | £{expense.amount}
+              <button
+              onClick={()=> handleDelete(expense.id)}
+              style = {{
+                backgroundColor: "#dc3545"
+              }}>
+                Delete
+              </button>
             </li>
           ))}
         </ul>

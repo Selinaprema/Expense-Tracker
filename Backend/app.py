@@ -6,7 +6,7 @@ from .services import fetch_expenses, add_expense, delete_expense, update_expens
 
 
 app = Flask(__name__) #creates a Flask application instance
-CORS(app)  
+CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)  
 init_db()  
 
 @app.route("/")
