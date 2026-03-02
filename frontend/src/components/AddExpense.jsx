@@ -1,6 +1,7 @@
 import { useState } from "react";
 
-function AddExpenseForm({ onExpenseAdded }) {
+//Function to add new expenses, receiving the add handler as a prop from the parent component
+function AddExpenseForm({ onAdd }) {
   const [formData, setFormData] = useState({
     date: "",
     category: "",
@@ -18,28 +19,17 @@ function AddExpenseForm({ onExpenseAdded }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    fetch("http://127.0.0.1:5000/api/expenses", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        ...formData,
-        amount: parseFloat(formData.amount)
-      })
-    })
-      .then(response => response.json())
-      .then(() => {
-        onExpenseAdded(); // Tell parent to refresh list
-        setFormData({
-          date: "",
-          category: "",
-          description: "",
-          amount: ""
-        });
-      })
-      .catch(error => console.error("Error adding expense:", error));
+    onAdd(formData); // Call parent handler to add expense
+
+    setFormData({ // Reset form after submission
+      date: "",
+      category: "",
+      description: "",
+      amount: ""
+    });
   };
 
-  return (
+  return ( 
     <>
       <h2>Add Expense</h2>
 
@@ -48,7 +38,7 @@ function AddExpenseForm({ onExpenseAdded }) {
         <input type="text" name="category" placeholder="Category" value={formData.category} onChange={handleChange} required />
         <input type="text" name="description" placeholder="Description" value={formData.description} onChange={handleChange} required />
         <input type="number" name="amount" placeholder="Amount" value={formData.amount} onChange={handleChange} required />
-        <button type="submit">Add</button>
+        <button  type="submit">Add</button>
       </form>
     </>
   );

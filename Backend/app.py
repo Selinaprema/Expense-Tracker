@@ -22,6 +22,7 @@ def get_expense():
 @app.route('/api/expenses', methods=['POST']) # API endpoint to add a new expense
 def create_expense():
 
+
     data = request.get_json() #get the JSON data from the request body
 
     if not data:# validate that data is provided in the request body
@@ -61,10 +62,6 @@ def remove_expense(expense_id):
     return jsonify({"message": "Expense successfully deleted"}), 200
 
 
-if __name__ == "__main__":
-    app.run(debug=True)
-
-
 @app.route('/api/expenses/<int:expense_id>', methods=['PUT'])
 def ammend_expense(expense_id):
 
@@ -91,3 +88,7 @@ def ammend_expense(expense_id):
         return jsonify({"error": "Expense not found"}), 404
     
     return jsonify({"message": "Expense successfully updated"}), 200
+
+
+if __name__ == "__main__":
+    app.run(debug=True)

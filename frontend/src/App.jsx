@@ -11,34 +11,72 @@ function App() {
       .then(response => response.json())
       .then(data => setExpenses(data))
       .catch(error => console.error("Error fetching expenses:", error));
-  };
+  }
+  
 
   // Fetch expenses when the component mounts
   useEffect(() => {
     fetchExpenses();
   }, []);
 
-  //delete an expense
-  const handleDelete = (id) => {
-    fetch(`http://127.0.0.1:5000/api/expenses/${id}`, {
-      method: 'DELETE'
+
+  // Add new expense
+  const handleAdd = (newExpense) =>{
+    fetch(`http://127.0.0.1:5000/api/expenses`,{
+      method:"POST",
+      headers: { "Content-Type": "application/json"
+
+      },
+      body:JSON.stringify({
+        ...newExpense,
+        amount: parseFloat(newExpense.amount)
+
+      })
     })
-    .then(() => fetchExpenses())
-    .catch(error => console.error('Error deleting expense:', error));
+    .then(()=> fetchExpenses())
+    .catch(err => console.error("Error adding",err));
+  };
+  
+  // Delete expense
+  const handleDelete = (id) =>{
+    fetch(`http://127.0.0.1:5000/api/expenses/${id}`,{
+      method:"DELETE"
+    })
+    .then(()=> fetchExpenses())
+    .catch(err => console.error("Error delting",err));
   }
+
+  // Update expense
+  const handleUpdate = (id, updatedData) =>{
+    fetch(`http://127.0.0.1:5000/api/expenses/${id}`,{
+      method:"PUT",
+      headers: { "Content-Type": "application/json"
+
+      },
+      body:JSON.stringify({
+        ...updatedData,
+        amount: parseFloat(updatedData.amount)
+
+      })
+    })
+    .then(()=> fetchExpenses())
+    .catch(err => console.error("Error updating",err));
+  }
+
 
   // Render the interface
   return (
     <div style={{ padding: "20px" }}>
       <h1>Expense Tracker</h1>
 
-      <AddExpense onExpenseAdded={fetchExpenses} /> 
+      <AddExpense onAdd={handleAdd} /> 
 
       <h2>All Expenses</h2>
 
       <ExpenseList 
         expenses={expenses}
         onDelete={handleDelete}
+        onUpdate={handleUpdate}
 />
     </div>
   );
