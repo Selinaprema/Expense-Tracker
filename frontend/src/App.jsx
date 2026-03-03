@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import AddExpense from "./components/AddExpense";
 import ExpenseList from "./components/ExpenseList";
+import ExpenseChart from "./components/ExpenseChart";
 
 function App() {
   const [expenses, setExpenses] = useState([]);
@@ -17,6 +18,7 @@ function App() {
   // Fetch expenses when the component mounts
   useEffect(() => {
     fetchExpenses();
+    fetchSummary();
   }, []);
 
 
@@ -33,16 +35,22 @@ function App() {
 
       })
     })
-    .then(()=> fetchExpenses())
+    .then(()=> {
+     fetchExpenses();
+     fetchSummary();
+  })
     .catch(err => console.error("Error adding",err));
   };
-  
+
   // Delete expense
   const handleDelete = (id) =>{
     fetch(`http://127.0.0.1:5000/api/expenses/${id}`,{
       method:"DELETE"
     })
-    .then(()=> fetchExpenses())
+    .then(()=> {
+     fetchExpenses();
+     fetchSummary();
+  })
     .catch(err => console.error("Error delting",err));
   }
 
@@ -59,10 +67,23 @@ function App() {
 
       })
     })
-    .then(()=> fetchExpenses())
+    .then(()=> {
+     fetchExpenses();
+     fetchSummary();
+  })
     .catch(err => console.error("Error updating",err));
   }
 
+  // State for summary data
+const [summary, setSummary] = useState(null);
+
+// Fetch summary data for total and category breakdown
+const fetchSummary = () => {
+  fetch("http://127.0.0.1:5000/api/expenses/summary")
+    .then(res => res.json())
+    .then(data => setSummary(data))
+    .catch(err => console.error("Error fetching summary:", err));
+};
 
   // Render the interface
   return (
@@ -77,8 +98,16 @@ function App() {
         expenses={expenses}
         onDelete={handleDelete}
         onUpdate={handleUpdate}
-/>
+        onFetchSummary={fetchSummary}
+/> 
+     {summary && ( // Summary section with total and chart, only rendered if summary data is available
+    <>
+      <h2>Total Spent: £{summary.total}</h2>
+      <ExpenseChart data={summary.by_category} />
+    </>
+)}
     </div>
+    
   );
 }
 

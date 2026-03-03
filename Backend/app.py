@@ -2,9 +2,8 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS # allows Cross-Origin Resource Sharing for all routes 
 from .database import init_db
 from .services import fetch_expenses, add_expense, delete_expense, update_expense
-
-
-
+import pandas as pd # used for expense summary endpoint
+  
 app = Flask(__name__) #creates a Flask application instance
 CORS(app, resources={r"/api/*": {"origins": "*"}}, supports_credentials=True)  
 init_db()  
@@ -50,7 +49,7 @@ def create_expense():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
+# API endpoint to delete an expense by ID
 @app.route('/api/expenses/<int:expense_id>', methods=['DELETE'])
 def remove_expense(expense_id):
 
@@ -61,7 +60,7 @@ def remove_expense(expense_id):
 
     return jsonify({"message": "Expense successfully deleted"}), 200
 
-
+# API endpoint to update an existing expense by ID
 @app.route('/api/expenses/<int:expense_id>', methods=['PUT'])
 def ammend_expense(expense_id):
 
@@ -89,6 +88,29 @@ def ammend_expense(expense_id):
     
     return jsonify({"message": "Expense successfully updated"}), 200
 
+# API endpoint to get a summary of expenses and breakdown by category
+@app.route('/api/expenses/summary', methods=['GET'])
+def expense_summary():
+    expenses = fetch_expenses()
+
+    if not expenses:
+        return jsonify({"total": 0, "by_category": []})
+
+    df = pd.DataFrame(expenses)
+
+    total = df["amount"].sum()
+
+    category_totals = (
+        df.groupby("category")["amount"]
+        .sum()
+        .reset_index()
+        .to_dict(orient="records")
+    )
+
+    return jsonify({
+        "total": float(total),
+        "by_category": category_totals
+    })
 
 if __name__ == "__main__":
     app.run(debug=True)
