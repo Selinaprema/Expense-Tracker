@@ -29,13 +29,15 @@ function EditExpense({ expense, onUpdate, onCancel }) {
       <input name="amount" value={formData.amount} onChange={handleChange} />
 
       <button
+        className="save-button" 
         onClick={handleSave}
-        style={{ marginLeft: "5px", backgroundColor: "#28a745", color: "white" }}
       >
         Save
       </button>
 
-      <button onClick={onCancel} style={{ marginLeft: "5px" }}>
+      <button 
+      className="cancel-button"
+      onClick={onCancel}>
         Cancel
       </button>
     </>
