@@ -43,7 +43,7 @@ Before running this project, make sure you have the following installed:
 ## 1. Clone The Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/Expense-Tracker.git
+git clone https://github.com/selinaprema/Expense-Tracker.git
 cd Expense-Tracker
 ```
 
